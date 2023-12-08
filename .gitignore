@@ -1,0 +1,11 @@
+/bitrix/*
+!/bitrix/templates
+/upload/
+/.idea/
+/bitrix/templates/.default/
+/bitrix/templates/calendar_sharing/
+/bitrix/templates/call_app/
+/bitrix/templates/desktop_app/
+/bitrix/templates/landing24/
+/bitrix/templates/learning/
+/bitrix/templates/mail_user/
