@@ -103,6 +103,7 @@ $this->setFrameMode(true);
 		"HIDE_LINK_WHEN_NO_DETAIL" => $arParams["HIDE_LINK_WHEN_NO_DETAIL"],
 		"CHECK_DATES" => $arParams["CHECK_DATES"],
         "DISPLAY_SPECIALDATE" => $arParams["DISPLAY_SPECIALDATE"],
+        "CANONICAL_ID" => $arParams["CANONICAL_ID"],
 	),
 	$component
 );?>
