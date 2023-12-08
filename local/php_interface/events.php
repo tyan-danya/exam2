@@ -1,0 +1,3 @@
+<?php
+
+\Citrus\Events::registerEvents();
