@@ -1,9 +1,20 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();?>
+
+<?
+    $specialDate = null;
+?>
+
 <div class="news-list">
 <?if($arParams["DISPLAY_TOP_PAGER"]):?>
 	<?=$arResult["NAV_STRING"]?><br />
 <?endif;?>
 <?foreach($arResult["ITEMS"] as $arItem):?>
+    <?
+        if (empty($specialDate) && isset($arItem["ACTIVE_FROM"]) && !empty($arItem["ACTIVE_FROM"])) {
+           $specialDate = $arItem["ACTIVE_FROM"];
+           $APPLICATION->SetPageProperty("specialdate", $specialDate);
+        }
+    ?>
 	<?
 	$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arParams["IBLOCK_ID"], "ELEMENT_EDIT"));
 	$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arParams["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('NEWS_DELETE_CONFIRM')));
