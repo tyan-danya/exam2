@@ -9,10 +9,15 @@ class Events
 {
     public static function registerEvents() {
 
-        $handler = EventManager::getInstance()->addEventHandler(
+        EventManager::getInstance()->addEventHandler(
             "iblock",
             "OnBeforeIBlockElementUpdate",
             array(self::class, "checkShowCount")
+        );
+        EventManager::getInstance()->addEventHandler(
+            "main",
+            "OnEpilog",
+            array(self::class, "check404")
         );
     }
 
@@ -29,5 +34,16 @@ class Events
             return false;
         }
 
+    }
+
+    public static function check404() {
+        if (defined('ERROR_404') && ERROR_404 == "Y") {
+            \CEventLog::Add(array(
+                'SEVERITY' => 'INFO',
+                'AUDIT_TYPE_ID' => 'ERROR_404',
+                'MODULE_ID' => 'main',
+                'DESCRIPTION' => 'url страницы',
+            ));
+        }
     }
 }
