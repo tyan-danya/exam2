@@ -8,6 +8,8 @@ class Events
     const AUTHOR_IS_NOT_AUTHORIZED = "Пользователь не авторизован, данные из формы: #FORM_NAME#";
     const AUTHOR_IS_AUTHORIZED = "Пользователь авторизован: #ID# (#LOGIN#) #NAME#, данные из формы: #FORM_NAME#";
     const FEEDBACK_EVENT_NAME = "FEEDBACK_FORM";
+    const CONTENT_EDITORS_GROUP = "content_editor";
+    const NEWS_IBLOCK_CODE = "furniture_news_s1";
 
     public static function registerEvents() {
 
@@ -25,6 +27,11 @@ class Events
             "main",
             "OnBeforeEventAdd",
             array(self::class, "checkFeedBackFormSend")
+        );
+        EventManager::getInstance()->addEventHandler(
+            "main",
+            "OnBuildGlobalMenu",
+            array(self::class, "MyOnBuildGlobalMenu")
         );
     }
 
@@ -77,5 +84,34 @@ class Events
             'MODULE_ID' => 'main',
             'DESCRIPTION' => 'Замена данных в отсылаемом письме – ' . $arFields['AUTHOR'],
         ));
+    }
+
+
+    function MyOnBuildGlobalMenu(&$aGlobalMenu, &$aModuleMenu)
+    {
+        global $USER;
+        $groups = \CUser::GetUserGroup($USER->GetID());
+        $rsGroups = \CGroup::GetList(Array(), Array(), Array ("STRING_ID" => self::CONTENT_EDITORS_GROUP));
+        if (!($contentGroup = $rsGroups->Fetch()) || !array_search($contentGroup["ID"], $groups)) {
+            return;
+        }
+
+        foreach($aModuleMenu as $menuItem) {
+            if ($menuItem["items_id"] === 'menu_iblock_/news') {
+                $aModuleMenu = [$menuItem];
+                $iblockRes = \CIBlock::GetList(Array(), Array("CODE" => self::NEWS_IBLOCK_CODE));
+                if (!$newsIblock = $iblockRes->Fetch()) {
+                    return;
+                }
+                foreach($menuItem["items"] as $childItem) {
+                    if ($childItem["items_id"] === 'menu_iblock_/news/' . $newsIblock["ID"]) {
+                        $aModuleMenu[0]["items"] = [$childItem];
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        $aGlobalMenu = ["global_menu_content" => $aGlobalMenu["global_menu_content"]];
     }
 }
